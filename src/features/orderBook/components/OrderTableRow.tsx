@@ -1,14 +1,10 @@
+import { useEffect, useState } from "react";
 import { OrderTableRowInterface } from "../interfaces/orderTableRowInterfaces";
 import "../orderBook.css"
 
-let width = 20;
-setInterval(()=>{
-  if (width<100) {
-    // width+=10
-  }else{
-    // width-=80
-  }
-},1000)
+
+
+// rgba(1, 167, 129, 0.25)
 
 function OrderTableRow({
   count=0,
@@ -16,20 +12,47 @@ function OrderTableRow({
   total=0,
   price=0,
   isReversible=false,
+  progressBarWidth=100
 }:Partial<OrderTableRowInterface>={
   count:0,
   amoumt:0,
   total:0,
   price:0,
   isReversible:false,
+  progressBarWidth:100
 }) {
+  const [styles,setStyles]=useState<any>({
+    width:`${progressBarWidth}%`,
+    backgroundColor:'rgba(1, 167, 129, 0.5)',
+    right:0
+  })
+  useEffect(()=>{
+    if (isReversible) {
+      setStyles((styleObj:any)=>{
+        // delete styleObj.right
+        return {
+          ...styleObj,
+          width:progressBarWidth+'%',
+          backgroundColor:'rgba(228, 75, 68, 0.5)',
+          left:0,
+        }
+      })
+    }else{
+      setStyles((styleObj:any)=>{
+        delete styleObj.left
+        return {
+          ...styleObj,
+          backgroundColor:'rgba(1, 167, 129, 0.5)',
+          width:progressBarWidth+'%',
+          right:0
+        }
+      })
+    }
+
+  },[isReversible,progressBarWidth])
   return (
     <div className="table-data-row-container">
-      <div className="table-data-row-overlay" style={{
-        width:`${width}%`,
-        backgroundColor:'red',
-        right:0
-      }}></div>
+      <div className="table-data-row-overlay" style={styles}></div>
       <div className="table-data-row table-row"  >
         <span>
           {count}

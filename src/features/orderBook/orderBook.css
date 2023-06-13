@@ -1,8 +1,14 @@
 /* index style */
 .order-book{
+  --default-background-color:#172d3e;
   --default-color:rgb(255,255,255);
   --secondary-color:#8b969f;
-  background-color: #172d3e;
+  --text-tertiary-color:rgb(130, 186, 246);
+  --indicator-primary-color:rgb(1,167,129);
+  --surface-color: rgb(40, 68, 91);
+  --surface-color-hover-varient:rgb(14, 52, 82);
+
+  background-color: var(--default-background-color);
   color: var(--default-color);
 }
 
@@ -56,3 +62,49 @@
   opacity: .3;
   transition: width .3s ease-in-out;
 }
+
+/* footer css */
+
+.order-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: 1em;
+  padding-block: .5em;
+}
+.order-footer .popup-btn{
+  background-color: var(--surface-color);
+  border: none;
+  border-radius: .2em;
+  outline: none;
+  padding: .2em .5em;
+}
+
+.order-footer .popup-btn:hover{
+  background-color: var(--surface-color-hover-varient);
+}
+.order-footer .order-indicator{
+  text-transform: uppercase;
+  display: flex;
+  gap: .5em;
+  font-size: .7em;
+}
+.order-footer .order-indicator .order-book-type{
+  color: var(--text-tertiary-color);
+  cursor: pointer;
+}
+.order-footer .order-indicator .data-flow-indicator{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: .5em;
+  cursor: help;
+}
+.order-footer .order-indicator .data-flow-indicator .indicator-icon{
+  color: var(--indicator-primary-color);
+}
+.order-footer .order-indicator .data-flow-indicator .datat-flow-connection-type{
+  text-decoration: underline;
+  
+}
+

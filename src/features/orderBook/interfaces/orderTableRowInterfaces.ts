@@ -4,5 +4,5 @@ export interface OrderTableRowInterface{
   total:number,
   price:number,
   isReversible:boolean,
-  
+  progressBarWidth:number
 }
