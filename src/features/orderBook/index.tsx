@@ -32,13 +32,21 @@ function OrderBook() {
     shouldReconnect: (closeEvent) => true,
     onMessage: (event: WebSocketEventMap['message']) =>  {
       let temp = JSON.parse(event?.data)
+      console.log({temp});
+      
+      
     }
   });
   useEffect(()=>{
-    let msg = JSON.stringify({ 
-      event: 'subscribe', 
-      channel: 'book', 
-      symbol: 'tBTCUSD' 
+    sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
+    let msg = JSON.stringify( {
+      event: "subscribe",
+      channel: "book",
+      symbol: 'tBTCUSD',
+      prec: "P0",
+      len: 25,
+      freq: "F0",
+      subId: 123,
     })
     sendMessage(msg)
   },[sendMessage])
@@ -53,7 +61,7 @@ function OrderBook() {
         <OrderTableRow progressBarWidth={width}></OrderTableRow>
       </div>
       <div className="order-book-buy-sell-section">
-        <OrderTableHeader layout={"forward"} ></OrderTableHeader>
+        <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
         <OrderTableRow progressBarWidth={width} isReversible={true} ></OrderTableRow>
       </div>
       </div>

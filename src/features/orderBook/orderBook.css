@@ -60,8 +60,13 @@
 .table-row.table-head{
   color: var(--secondary-color);
 }
+
 .table-row .table-cell{
   text-align: end;
+  font-size: .8em;
+}
+.table-row .table-cell:last-child{
+  padding: 0 .5em;
 }
 .table-data-row-container{
   position: relative;

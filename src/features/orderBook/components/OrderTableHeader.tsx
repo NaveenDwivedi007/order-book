@@ -8,10 +8,10 @@ function OrderTableHeader({
   layout:'forward',
   headerText:['count', 'amount' , 'total' , 'Price']
 }) {
- return (<div className="table-row table-head">
+ return (<div className={`table-row table-head ${layout}`}>
   <span className="table-cell"></span>
   {
-    headerText?.map((x)=><span className="table-cell">{x}</span>)
+    headerText?.map((x)=><span key={x} className="table-cell">{x}</span>)
   }
  </div>) 
 }

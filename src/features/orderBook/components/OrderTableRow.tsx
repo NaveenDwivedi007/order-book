@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { OrderTableRowInterface } from "../interfaces/orderTableRowInterfaces";
+import { OrderTableRowInterface, StyleObj } from "../interfaces/orderTableRowInterfaces";
 import "../orderBook.css"
 
 
@@ -21,15 +21,14 @@ function OrderTableRow({
   isReversible:false,
   progressBarWidth:100
 }) {
-  const [styles,setStyles]=useState<any>({
+  const [styles,setStyles]=useState<StyleObj>({
     width:`${progressBarWidth}%`,
     backgroundColor:'rgba(1, 167, 129, 0.5)',
     right:0
   })
   useEffect(()=>{
     if (isReversible) {
-      setStyles((styleObj:any)=>{
-        // delete styleObj.right
+      setStyles((styleObj)=>{
         return {
           ...styleObj,
           width:progressBarWidth+'%',
