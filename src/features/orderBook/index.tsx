@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import OrderHeader from "./components/OrderHeader";
+import OrderTableHeader from "./components/OrderTableHeader";
 import OrderTableRow from "./components/OrderTableRow";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import OrderHeader from "./components/OrderHeader";
 let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 function OrderBook() {
   const {
@@ -31,8 +32,8 @@ function OrderBook() {
 
   return (
     <div className="order-book">
-      hello
-     <OrderHeader layout={"forward"} ></OrderHeader>
+      <OrderHeader></OrderHeader>
+     <OrderTableHeader layout={"forward"} ></OrderTableHeader>
      <OrderTableRow></OrderTableRow>
     </div>
   );

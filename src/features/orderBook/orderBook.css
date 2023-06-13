@@ -1,12 +1,54 @@
+/* index style */
+.order-book{
+  --default-color:rgb(255,255,255);
+  --secondary-color:#8b969f;
+  background-color: #172d3e;
+  color: var(--default-color);
+}
+
+
+
+/* header css */
+.order-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-header .section{
+  display: flex;
+  align-items: center;
+  gap:.3em;
+}
+.order-header .section.action{
+  --gap-margin:1em;
+  gap: var(--gap-margin);
+  margin-right: var(--gap-margin);
+}
+.order-header .section .order-type{
+  display: flex;
+  gap: .2em;
+  text-transform: uppercase;
+}
+
+.order-header .section .order-type .order-of{
+  color: var(--secondary-color);
+}
+
+
+/* table css */
 .table-row{
   display: grid;
   grid-template-columns: repeat(4,1fr);
+  text-transform: uppercase;
+}
+.table-row.table-head{
+  color: var(--secondary-color);
 }
 .table-data-row-container{
   position: relative;
 }
 .table-data-row-container .table-data-row{
-  color: blue;
 }
 .table-data-row-container .table-data-row-overlay{
   height: 100%;

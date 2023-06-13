@@ -1,19 +1,27 @@
-import { OrderHeaderInterdace } from "../interfaces/orderHeaderInterfaces"
-import '../orderBook.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown,faMagnifyingGlassMinus,faMagnifyingGlassPlus,faBell,faGear } from '@fortawesome/free-solid-svg-icons'
+function OrderHeader() {
+  return (
+    <div className='order-header'>
+      <div className="section">
+        <FontAwesomeIcon icon={faChevronDown} style={{color: "#f2f2f2",}} />
+        <span className="order-type">
+          <span>order book</span>  
+          <span className="order-of">
+            {/* TODO: need to be dynamic */}
+             btc/usd 
+          </span>
+        </span>
+      </div>
+      <div className="section action">
+      <FontAwesomeIcon icon={faBell} style={{color: "#f2f2f2",}} />
+      <FontAwesomeIcon icon={faGear} style={{color: "#f2f2f2",}}/>
+      <FontAwesomeIcon icon={faMagnifyingGlassPlus} style={{color: "#f2f2f2",}} />
+      <FontAwesomeIcon icon={faMagnifyingGlassMinus} style={{color: "#f2f2f2",}} />
 
-function OrderHeader({
-  layout='forward',
-  headerText=['count', 'amount' , 'total' , 'Price']
-}:Partial<OrderHeaderInterdace>={
-  layout:'forward',
-  headerText:['count', 'amount' , 'total' , 'Price']
-}) {
- return (<div className="table-row">
-  {
-    headerText?.map((x)=><span>{x}</span>)
-  }
- </div>) 
+      </div>
+    </div>
+  )
 }
-
 
 export default OrderHeader
