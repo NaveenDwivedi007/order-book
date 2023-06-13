@@ -12,6 +12,12 @@
   color: var(--default-color);
 }
 
+.order-book .order-book-container{
+  display: flex;
+}
+.order-book .order-book-container .order-book-buy-sell-section{
+ width: 100%;
+}
 
 
 /* header css */
@@ -45,14 +51,21 @@
 /* table css */
 .table-row{
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(5,1fr);
   text-transform: uppercase;
+}
+.table-row.reverse{
+  direction: rtl;
 }
 .table-row.table-head{
   color: var(--secondary-color);
 }
+.table-row .table-cell{
+  text-align: end;
+}
 .table-data-row-container{
   position: relative;
+  isolation: isolate;
 }
 .table-data-row-container .table-data-row{
 }
@@ -61,6 +74,8 @@
   position: absolute;
   opacity: .3;
   transition: width .3s ease-in-out;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* footer css */

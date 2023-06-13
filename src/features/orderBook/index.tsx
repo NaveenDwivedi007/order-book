@@ -47,10 +47,16 @@ function OrderBook() {
   return (
     <div className="order-book">
       <OrderHeader></OrderHeader>
-      <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-      <OrderTableRow progressBarWidth={width}></OrderTableRow>
-      <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-      <OrderTableRow progressBarWidth={width} isReversible={true} ></OrderTableRow>
+      <div className="order-book-container">
+      <div className="order-book-buy-sell-section">
+        <OrderTableHeader layout={"forward"} ></OrderTableHeader>
+        <OrderTableRow progressBarWidth={width}></OrderTableRow>
+      </div>
+      <div className="order-book-buy-sell-section">
+        <OrderTableHeader layout={"forward"} ></OrderTableHeader>
+        <OrderTableRow progressBarWidth={width} isReversible={true} ></OrderTableRow>
+      </div>
+      </div>
       <OrderFooter></OrderFooter>
     </div>
   );

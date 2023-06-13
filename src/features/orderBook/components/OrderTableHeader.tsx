@@ -9,8 +9,9 @@ function OrderTableHeader({
   headerText:['count', 'amount' , 'total' , 'Price']
 }) {
  return (<div className="table-row table-head">
+  <span className="table-cell"></span>
   {
-    headerText?.map((x)=><span>{x}</span>)
+    headerText?.map((x)=><span className="table-cell">{x}</span>)
   }
  </div>) 
 }

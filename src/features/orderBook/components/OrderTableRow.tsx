@@ -53,17 +53,18 @@ function OrderTableRow({
   return (
     <div className="table-data-row-container">
       <div className="table-data-row-overlay" style={styles}></div>
-      <div className="table-data-row table-row"  >
-        <span>
+      <div className={"table-data-row table-row " +(isReversible?'reverse':null)}   >
+        <span className="table-cell" ></span>
+        <span className="table-cell" >
           {count}
         </span>
-        <span>
+        <span className="table-cell" >
           {amoumt}
         </span>
-        <span>
+        <span className="table-cell" >
           {total}
         </span>
-        <span>
+        <span className="table-cell" >
           {price}
         </span>
       </div>
