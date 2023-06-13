@@ -8,7 +8,7 @@ function OrderHeader({
   layout:'forward',
   headerText:['count', 'amount' , 'total' , 'Price']
 }) {
- return (<div className="test">
+ return (<div className="table-row">
   {
     headerText?.map((x)=><span>{x}</span>)
   }

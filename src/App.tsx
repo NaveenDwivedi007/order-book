@@ -3,7 +3,7 @@ import OrderBook from './features/orderBook';
 
 function App() {
   return (
-    <div className="App">
+    <div>
     <OrderBook></OrderBook>
     </div>
   );

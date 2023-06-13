@@ -1,3 +1,16 @@
-.test{
-  color: red
+.table-row{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+}
+.table-data-row-container{
+  position: relative;
+}
+.table-data-row-container .table-data-row{
+  color: blue;
+}
+.table-data-row-container .table-data-row-overlay{
+  height: 100%;
+  position: absolute;
+  opacity: .3;
+  transition: width .3s ease-in-out;
 }
