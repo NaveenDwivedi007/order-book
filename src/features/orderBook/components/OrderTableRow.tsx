@@ -11,14 +11,14 @@ import React from "react";
 
 function OrderTableRow({
   count=0,
-  amoumt=0,
+  amount=0,
   total=0,
   price=0,
   isReversible=false,
   progressBarWidth=100
 }:Partial<OrderTableRowInterface>={
   count:0,
-  amoumt:0,
+  amount:0,
   total:0,
   price:0,
   isReversible:false,
@@ -65,7 +65,7 @@ function OrderTableRow({
           {count}
         </span>
         <span className="table-cell" >
-          {amoumt}
+          {amount}
         </span>
         <span className="table-cell" >
           {total}
