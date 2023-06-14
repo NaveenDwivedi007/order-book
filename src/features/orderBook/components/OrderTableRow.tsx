@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { OrderTableRowInterface, StyleObj } from "../interfaces/orderTableRowInterfaces";
 import "../orderBook.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faBell } from '@fortawesome/free-solid-svg-icons'
+import React from "react";
 
 
 
@@ -53,7 +56,11 @@ function OrderTableRow({
     <div className="table-data-row-container">
       <div className="table-data-row-overlay" style={styles}></div>
       <div className={"table-data-row table-row " +(isReversible?'reverse':null)}   >
-        <span className="table-cell" ></span>
+        <span className="table-cell" >
+          <button className='action-btn'>
+            <FontAwesomeIcon icon={faBell} style={{color: "#f2f2f2",}} />
+          </button>
+        </span>
         <span className="table-cell" >
           {count}
         </span>
@@ -72,4 +79,4 @@ function OrderTableRow({
 }
 
 
-export default OrderTableRow
+export default React.memo(OrderTableRow)

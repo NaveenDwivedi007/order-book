@@ -1,3 +1,4 @@
+import React from "react"
 import { OrderHeaderInterdace } from "../interfaces/orderHeaderInterfaces"
 import '../orderBook.css'
 
@@ -17,4 +18,4 @@ function OrderTableHeader({
 }
 
 
-export default OrderTableHeader
+export default React.memo(OrderTableHeader)

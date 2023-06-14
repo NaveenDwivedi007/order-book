@@ -25,6 +25,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+  cursor: pointer;
+  padding-block: .3em;
 }
 
 .order-header .section{
@@ -32,10 +35,18 @@
   align-items: center;
   gap:.3em;
 }
+.order-header .section .action-btn{
+  background: none;
+  border: none;
+  padding-block: .5em;
+}
 .order-header .section.action{
   --gap-margin:1em;
   gap: var(--gap-margin);
   margin-right: var(--gap-margin);
+}
+.order-header .section.action .action-btn{
+  font-size: .8em;
 }
 .order-header .section .order-type{
   display: flex;
@@ -65,14 +76,28 @@
   text-align: end;
   font-size: .8em;
 }
+.table-row .table-cell .action-btn{
+  border: none;
+  background: none;
+  font-size: .8em;
+  opacity: .3;
+  display: none;
+}
+.table-row .table-cell .action-btn:hover{
+  opacity: .6;
+}
 .table-row .table-cell:last-child{
   padding: 0 .5em;
+}
+.table-row .table-cell:first-child{
+  /* background-color: red; */
 }
 .table-data-row-container{
   position: relative;
   isolation: isolate;
 }
-.table-data-row-container .table-data-row{
+.table-data-row-container .table-data-row:hover .table-cell .action-btn {
+  display: unset;
 }
 .table-data-row-container .table-data-row-overlay{
   height: 100%;

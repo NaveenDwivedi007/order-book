@@ -1,0 +1,1 @@
+export type SocketResponse = [number,[number,number,number]|string]
