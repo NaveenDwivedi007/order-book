@@ -11,11 +11,8 @@ let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 
 
 function OrderBook() {
-  const [buyArr,setBuyArr]=useState<OrderTableRowInterface[]>(new Array(15).fill(null))
-  const [sellArr,setSellArr]=useState<OrderTableRowInterface[]>(new Array(15).fill(null))
   const [buyObj,setBuyObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
   const [sellObj,setSellObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
-
 
   const {
     sendMessage
@@ -61,10 +58,16 @@ function OrderBook() {
   function setSellObjHandler(orderDetails:[number,number,number]) {
     let [price,count,amount] = orderDetails
     if (!price) return
-    if (sellObj[price] && amount === 0 ) {
-      let tempObj = {...sellObj} 
-      delete tempObj[price]
-      setSellObj(tempObj)
+    const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
+    if (amount === 0 ) {
+      if(sellObj[price]){
+        let tempObj = {...sellObj} 
+        delete tempObj[price]      
+        setSellObj(()=>{
+          return {...tempObj}
+        })
+      }
+      return
     }
     amount = Math.round(-1*amount*100)/100
     let total = Math.floor((count*amount)*100)/100
@@ -77,7 +80,8 @@ function OrderBook() {
           amount,
           total:total,
           isReversible:true,
-          price
+          price,
+          progressBarWidth:volumeCalculator(total,totals)
         }
       }else{
         return
@@ -88,8 +92,8 @@ function OrderBook() {
         amount,
         total:total,
         isReversible:true,
-        progressBarWidth:100,
-        price
+        price,
+        progressBarWidth:volumeCalculator(total,totals)
       }
     }
     setSellObj((val)=>{
@@ -100,6 +104,7 @@ function OrderBook() {
   function setBuyObjHandler(orderDetails:[number,number,number]) {
     let [price,count,amount] = orderDetails
     if (!price) return
+    const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
     if (buyObj[price] && amount === 0 ) {
       let tempObj = {...buyObj} 
       delete tempObj[price]
@@ -116,7 +121,8 @@ function OrderBook() {
           amount,
           total:total,
           isReversible:false,
-          price
+          price,
+          progressBarWidth:volumeCalculator(total,totals)
         }
       }else{
         return
@@ -127,8 +133,8 @@ function OrderBook() {
         amount,
         total:total,
         isReversible:false,
-        progressBarWidth:100,
-        price
+        price,
+        progressBarWidth:volumeCalculator(total,totals),
       }
     }
     setBuyObj((val)=>{
@@ -136,15 +142,9 @@ function OrderBook() {
       return {...val}
     })
   }
-
-  function OrderBookSortedAndVolumeCalcuated(orderDataRow:OrderTableRowInterface[]):OrderTableRowInterface[] {
-    let orderBookRow = orderDataRow.sort((a,b)=>a.total-b.total)
-    const maxTotal = orderBookRow[orderBookRow.length-1].total
-    const minTotal = orderBookRow[0].total
-    return orderBookRow.map(x=>{
-      x.progressBarWidth = x.total/(Math.max(maxTotal,30)-minTotal)
-      return {...x}
-    })
+  function volumeCalculator(total:number,totals:number[]):number {
+    let set:any = new Set(totals)
+    return Math.min(Math.ceil(total/([...set].reduce((prev,curr)=>prev+curr,0))*100),100)
   }
 
   return (
