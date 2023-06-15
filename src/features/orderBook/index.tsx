@@ -15,6 +15,7 @@ function OrderBook() {
   const [buyObj,setBuyObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
   const [sellObj,setSellObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
   const [isLoading,setIsLoading] = useState(true)
+  const [isCollapsed,setIsCollapsed ] = useState(false)
 
 
   const {
@@ -161,34 +162,40 @@ function OrderBook() {
     return Math.min(Math.ceil(total/([...set].reduce((prev,curr)=>prev+curr,0))*100),90)
   }
 
+  function toggleCollasHandler() {
+    setIsCollapsed(val=>!val)
+  }
+
   return (
     <div className="order-book">
-      <OrderHeader></OrderHeader>
-      <div className="order-book-container">
-        <div className="order-book-buy-sell-section">
-          <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-          {!isLoading && Object.keys(buyObj).sort((a,b)=>{
-            return buyObj[a].total - buyObj[b].total
-          }).map((x,i)=>
-            (
-              <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)
-            )}
+      <OrderHeader isCollapsed={isCollapsed} toggleFn={toggleCollasHandler} ></OrderHeader>
+      {!isCollapsed && <div className="order-book-body">
+        <div className="order-book-container">
+          <div className="order-book-buy-sell-section">
+            <OrderTableHeader layout={"forward"} ></OrderTableHeader>
+            {!isLoading && Object.keys(buyObj).sort((a,b)=>{
+              return buyObj[a].total - buyObj[b].total
+            }).map((x,i)=>
+              (
+                <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)
+              )}
+          </div>
+          <div className="order-book-buy-sell-section">
+            <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
+            
+            {!isLoading && Object.keys(sellObj).sort((a,b)=>{
+              return sellObj[a].total - sellObj[b].total
+            }).map((x,i)=>
+              (
+                <OrderTableRow key={x} {...sellObj[x]} price={x} ></OrderTableRow>)
+              )}
+          </div>
         </div>
-        <div className="order-book-buy-sell-section">
-          <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
-          
-          {!isLoading && Object.keys(sellObj).sort((a,b)=>{
-            return sellObj[a].total - sellObj[b].total
-          }).map((x,i)=>
-            (
-              <OrderTableRow key={x} {...sellObj[x]} price={x} ></OrderTableRow>)
-            )}
-        </div>
-      </div>
-        {isLoading && <div className="loader">
-          <Loader />
-        </div> }
-      <OrderFooter></OrderFooter>
+          {isLoading && <div className="loader">
+            <Loader />
+          </div> }
+        <OrderFooter></OrderFooter>
+      </div>}
     </div>
   );
 }
