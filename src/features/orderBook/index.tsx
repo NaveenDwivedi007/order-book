@@ -6,6 +6,7 @@ import OrderHeader from "./components/OrderHeader";
 import OrderFooter from "./components/OrderFooter";
 import { SocketResponse } from "./interfaces/clientResponseInterface";
 import { OrderTableRowInterface } from "./interfaces/orderTableRowInterfaces";
+import Loader from "../../components/Loader";
 let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 
 
@@ -13,6 +14,8 @@ let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 function OrderBook() {
   const [buyObj,setBuyObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
   const [sellObj,setSellObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
+  const [isLoading,setIsLoading] = useState(true)
+
 
   const {
     sendMessage
@@ -144,33 +147,36 @@ function OrderBook() {
   }
   function volumeCalculator(total:number,totals:number[]):number {
     let set:any = new Set(totals)
-    return Math.min(Math.ceil(total/([...set].reduce((prev,curr)=>prev+curr,0))*100),100)
+    return Math.min(Math.ceil(total/([...set].reduce((prev,curr)=>prev+curr,0))*100),90)
   }
 
   return (
     <div className="order-book">
       <OrderHeader></OrderHeader>
       <div className="order-book-container">
-      <div className="order-book-buy-sell-section">
-        <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-        {Object.keys(buyObj).sort((a,b)=>{
-          return buyObj[a].total - buyObj[b].total
-        }).map((x,i)=>
-          (
-            <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)
-          )}
+        <div className="order-book-buy-sell-section">
+          <OrderTableHeader layout={"forward"} ></OrderTableHeader>
+          {!isLoading && Object.keys(buyObj).sort((a,b)=>{
+            return buyObj[a].total - buyObj[b].total
+          }).map((x,i)=>
+            (
+              <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)
+            )}
+        </div>
+        <div className="order-book-buy-sell-section">
+          <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
+          
+          {!isLoading && Object.keys(sellObj).sort((a,b)=>{
+            return sellObj[a].total - sellObj[b].total
+          }).map((x,i)=>
+            (
+              <OrderTableRow key={x} {...sellObj[x]} price={x} ></OrderTableRow>)
+            )}
+        </div>
       </div>
-      <div className="order-book-buy-sell-section">
-        <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
-        
-        {Object.keys(sellObj).sort((a,b)=>{
-          return sellObj[a].total - sellObj[b].total
-        }).map((x,i)=>
-          (
-            <OrderTableRow key={x} {...sellObj[x]} price={x} ></OrderTableRow>)
-          )}
-      </div>
-      </div>
+        {isLoading && <div className="loader">
+          <Loader />
+        </div> }
       <OrderFooter></OrderFooter>
     </div>
   );

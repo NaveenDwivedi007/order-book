@@ -10,13 +10,22 @@
 
   background-color: var(--default-background-color);
   color: var(--default-color);
+  position: relative;
 }
 
 .order-book .order-book-container{
   display: flex;
+  min-height: 20ch;
+  max-height: 30ch;
+  overflow: auto;
 }
 .order-book .order-book-container .order-book-buy-sell-section{
  width: 100%;
+}
+.loader{
+  width: 100%;
+  min-height: 20ch;
+  text-align: center;
 }
 
 
