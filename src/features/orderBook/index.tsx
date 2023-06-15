@@ -21,13 +21,17 @@ function OrderBook() {
     sendMessage
   } = useWebSocket(socketUrl, {
     onOpen: () => console.log('connected to websocket'),
-    onClose:() => console.log('webSocket close trying to reconnect'),
+    onClose:() => {
+      setIsLoading(true)
+      console.log('webSocket close trying to reconnect')
+    },
     shouldReconnect: () => true,
     onMessage: (event: WebSocketEventMap['message']) =>  {      
       let temp:SocketResponse = JSON.parse(event?.data);
       orderBookArrHelper(temp[1])
     }
   });
+
   useEffect(()=>{
     // sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
     let msg = JSON.stringify( {
@@ -43,6 +47,13 @@ function OrderBook() {
     sendMessage(msg)
   },[sendMessage])
 
+  useEffect(()=>{
+    if (isLoading) {
+      if (Object.keys(buyObj).length && Object.keys(sellObj).length) {
+        setIsLoading(false)
+      }
+    }
+  },[buyObj, isLoading, sellObj])
 
   function orderBookArrHelper(orderDetails:[number,number,number]|string) {
     if(!orderDetails || typeof(orderDetails) === 'string') return    
