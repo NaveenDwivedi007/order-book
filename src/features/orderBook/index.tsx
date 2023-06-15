@@ -192,7 +192,7 @@ function OrderBook() {
           </div>
         </div>
           {isLoading && <div className="loader">
-            <Loader />
+            <Loader isImageVisible={false}/>
           </div> }
         <OrderFooter></OrderFooter>
       </div>}
