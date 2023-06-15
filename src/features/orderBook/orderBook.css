@@ -49,8 +49,12 @@
   border: none;
   padding-block: .5em;
 }
+.order-header .section .action-btn > *{
+  transition: all .3s linear;
+}
 .order-header .section .action-btn .action-collapse-icon{
-  transform: rotate(270deg);
+  transform: rotate(-90deg);
+  
 }
 .order-header .section.action{
   --gap-margin:1em;
