@@ -34,12 +34,12 @@ function OrderBook() {
   });
 
   useEffect(()=>{
-    // sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
+    sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
     let msg = JSON.stringify( {
       event: "subscribe",
       channel: "book",
       symbol: 'tBTCUSD',
-      pair:'ETHUSD',
+      pair:'BTCUSD',
       prec: "P0",
       len: 25,
       freq: "F0",
@@ -74,7 +74,10 @@ function OrderBook() {
     let [price,count,amount] = orderDetails
     if (!price) return
     const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
-    if (amount === 0 ) {
+    amount = Math.round(-1*amount*100)/100
+    if (amount === 0 || amount == -0) {  
+      console.log({amount,obj:sellObj[price]});
+          
       if(sellObj[price]){
         let tempObj = {...sellObj} 
         delete tempObj[price]      
@@ -84,7 +87,6 @@ function OrderBook() {
       }
       return
     }
-    amount = Math.round(-1*amount*100)/100
     let total = Math.floor((count*amount)*100)/100
     let tempObj = sellObj[price]
     if (tempObj ) {
@@ -96,7 +98,8 @@ function OrderBook() {
           total:total,
           isReversible:true,
           price,
-          progressBarWidth:volumeCalculator(total,totals)
+          progressBarWidth:volumeCalculator(total,totals),
+
         }
       }else{
         return
@@ -108,7 +111,8 @@ function OrderBook() {
         total:total,
         isReversible:true,
         price,
-        progressBarWidth:volumeCalculator(total,totals)
+        progressBarWidth:volumeCalculator(total,totals),
+
       }
     }
     setSellObj((val)=>{
@@ -137,7 +141,8 @@ function OrderBook() {
           total:total,
           isReversible:false,
           price,
-          progressBarWidth:volumeCalculator(total,totals)
+
+          progressBarWidth:100-volumeCalculator(total,totals)
         }
       }else{
         return
@@ -149,7 +154,7 @@ function OrderBook() {
         total:total,
         isReversible:false,
         price,
-        progressBarWidth:volumeCalculator(total,totals),
+        progressBarWidth:100-volumeCalculator(total,totals),
       }
     }
     setBuyObj((val)=>{
@@ -174,7 +179,7 @@ function OrderBook() {
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"forward"} ></OrderTableHeader>
             {!isLoading && Object.keys(buyObj).sort((a,b)=>{
-              return buyObj[a].total - buyObj[b].total
+              return buyObj[b].total - buyObj[a].total
             }).map((x,i)=>
               (
                 <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)

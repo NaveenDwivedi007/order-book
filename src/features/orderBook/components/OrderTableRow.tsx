@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { OrderTableRowInterface, StyleObj } from "../interfaces/orderTableRowInterfaces";
 import "../orderBook.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,20 +15,22 @@ function OrderTableRow({
   total=0,
   price=0,
   isReversible=false,
-  progressBarWidth=100
+  progressBarWidth=100,
 }:Partial<OrderTableRowInterface>={
   count:0,
   amount:0,
   total:0,
   price:0,
   isReversible:false,
-  progressBarWidth:100
+  progressBarWidth:100,
 }) {
   const [styles,setStyles]=useState<StyleObj>({
     width:`${progressBarWidth}%`,
     backgroundColor:'rgba(1, 167, 129, 0.5)',
     right:0
   })
+  const [isNewEntry,setIsNewEntry] = useState(true)
+
   useEffect(()=>{
     if (isReversible) {
       setStyles((styleObj)=>{
@@ -52,10 +54,19 @@ function OrderTableRow({
     }
 
   },[isReversible,progressBarWidth])
+
+
+  useEffect(()=>{
+    setIsNewEntry(false)
+  },[amount,total])
+  useEffect(()=>{
+    setIsNewEntry(true)
+  },[price])
+
   return (
     <div className="table-data-row-container">
       <div className="table-data-row-overlay" style={styles}></div>
-      <div className={"table-data-row table-row " +(isReversible?'reverse':null)}   >
+      <div className={"table-data-row table-row " +(isReversible?'reverse ':'') + (isNewEntry?'blink':'') }   >
         <span className="table-cell" >
           <button className='action-btn'>
             <FontAwesomeIcon icon={faBell} style={{color: "#f2f2f2",}} />

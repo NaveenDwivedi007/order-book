@@ -169,3 +169,18 @@
   
 }
 
+/* animation css */
+.blink{
+  animation: blink .3s ease-in 1 forwards;
+}
+@keyframes blink {
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
