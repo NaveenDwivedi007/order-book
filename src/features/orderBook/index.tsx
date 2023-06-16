@@ -171,6 +171,7 @@ function OrderBook() {
 
   function objectToArrHelper(obj:{[key:string|number]:OrderTableRowInterface},sortType:'asc'|'dec'='asc'):OrderTableRowInterface[] {
     if (!obj) return []
+    // TODO: make a length of roe same and fix in count.
     // if (Object.keys(obj).length>15) {
     //   let removeLength = Object.keys(buyObj).length-15
     //   let totals:number[] = []
