@@ -198,7 +198,7 @@ function OrderBook() {
     return Object.keys(obj).sort((a,b)=>{
       if (sortType === 'dec') return obj[b].total - obj[a].total
         return obj[a].total - obj[b].total
-    }).map(x=>obj[x])
+    }).map(x=>obj[x]).filter(x=>x.amount)
     
   }
 
