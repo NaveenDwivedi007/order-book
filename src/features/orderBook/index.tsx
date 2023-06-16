@@ -75,9 +75,7 @@ function OrderBook() {
     if (!price) return
     const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
     amount = Math.round(-1*amount*100)/100
-    if (amount === 0 || amount == -0) {  
-      console.log({amount,obj:sellObj[price]});
-          
+    if (amount === 0 || amount == -0) {            
       if(sellObj[price]){
         let tempObj = {...sellObj} 
         delete tempObj[price]      
@@ -171,6 +169,39 @@ function OrderBook() {
     setIsCollapsed(val=>!val)
   }
 
+  function objectToArrHelper(obj:{[key:string|number]:OrderTableRowInterface},sortType:'asc'|'dec'='asc'):OrderTableRowInterface[] {
+    if (!obj) return []
+    // if (Object.keys(obj).length>15) {
+    //   let removeLength = Object.keys(buyObj).length-15
+    //   let totals:number[] = []
+    //   return Object.keys(obj).sort((a,b)=>{
+    //     if (sortType === 'dec') return obj[b].total - obj[a].total
+    //     return obj[a].total - obj[b].total
+    //   }).filter((x,i)=>{
+    //     if (sortType === 'dec') {
+    //       if (i<removeLength) {
+    //         totals.push(obj[x].total)
+    //       }
+    //       return  i<removeLength
+    //     }
+    //     totals.push(obj[x].total)
+    //     return i>removeLength
+    //   }).map(x=>obj[x]).map(x=>{
+    //     if (sortType === 'dec') {
+    //       x.progressBarWidth = 100 - volumeCalculator(x.total,totals)
+    //     }else{
+    //       x.progressBarWidth = volumeCalculator(x.total,totals)
+    //     }
+    //     return {...x}
+    //   })
+    // }
+    return Object.keys(obj).sort((a,b)=>{
+      if (sortType === 'dec') return obj[b].total - obj[a].total
+        return obj[a].total - obj[b].total
+    }).map(x=>obj[x])
+    
+  }
+
   return (
     <div className="order-book">
       <OrderHeader isCollapsed={isCollapsed} toggleFn={toggleCollasHandler} ></OrderHeader>
@@ -178,21 +209,17 @@ function OrderBook() {
         <div className="order-book-container">
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-            {!isLoading && Object.keys(buyObj).sort((a,b)=>{
-              return buyObj[b].total - buyObj[a].total
-            }).map((x,i)=>
+            {!isLoading && objectToArrHelper(buyObj,'dec').map((x,i)=>
               (
-                <OrderTableRow key={x} {...buyObj[x]} price={x} ></OrderTableRow>)
+                <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
               )}
           </div>
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
             
-            {!isLoading && Object.keys(sellObj).sort((a,b)=>{
-              return sellObj[a].total - sellObj[b].total
-            }).map((x,i)=>
+            {!isLoading && objectToArrHelper(sellObj).map((x,i)=>
               (
-                <OrderTableRow key={x} {...sellObj[x]} price={x} ></OrderTableRow>)
+                <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
               )}
           </div>
         </div>

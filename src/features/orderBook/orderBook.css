@@ -16,7 +16,7 @@
 .order-book .order-book-container{
   display: flex;
   min-height: 20ch;
-  max-height: 30ch;
+  max-height: 90vh;
   overflow: auto;
 }
 .order-book .order-book-container .order-book-buy-sell-section{
