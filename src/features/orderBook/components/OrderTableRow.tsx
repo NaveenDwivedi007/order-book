@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,useState } from "react";
 import { OrderTableRowInterface, StyleObj } from "../interfaces/orderTableRowInterfaces";
 import "../orderBook.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

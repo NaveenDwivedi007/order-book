@@ -75,7 +75,7 @@ function OrderBook() {
     if (!price) return
     const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
     amount = Math.round(-1*amount*100)/100
-    if (amount === 0 || amount == -0) {            
+    if (amount === 0 || amount === -0) {            
       if(sellObj[price]){
         let tempObj = {...sellObj} 
         delete tempObj[price]      
