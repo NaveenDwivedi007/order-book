@@ -164,12 +164,14 @@ function OrderBook() {
     if (!obj) return []
     let total = 0
     let totals = 0
-    return Object.keys(obj).filter(x => {
-      if (obj[x].amount && sortType === 'dec') {
-        total += obj[x].amount
+    return Object.keys(obj).filter((x,i) => {
+      if (i<25) {
+        if (obj[x].amount && sortType === 'dec') {
+          total += obj[x].amount
+        }
+        totals += obj[x].amount
       }
-      totals += obj[x].amount
-      return obj[x].amount
+      return obj[x].amount && i<25
     }).map(x => {
       const currObj = {...obj[x]}
       if (sortType=== 'dec') {
