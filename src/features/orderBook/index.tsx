@@ -7,11 +7,14 @@ import OrderFooter from "./components/OrderFooter";
 import { ResponseTransformObject, SocketResponse } from "./interfaces/clientResponseInterface";
 import { OrderTableRowInterface } from "./interfaces/orderTableRowInterfaces";
 import Loader from "../../components/Loader";
+import { OrderBookInterface } from "./interfaces/orderBookInterface";
 let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 
 
 
-function OrderBook() {
+function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
+  pair:'BTCUSD'
+}) {
   const [buyObj, setBuyObj] = useState<ResponseTransformObject>({})
   const [sellObj, setSellObj] = useState<ResponseTransformObject>({})
   const [isLoading, setIsLoading] = useState(true)
@@ -38,8 +41,8 @@ function OrderBook() {
     let msg = JSON.stringify({
       event: "subscribe",
       channel: "book",
-      symbol: 'tBTCUSD',
-      pair: 'BTCUSD',
+      // symbol: 'tBTCUSD',
+      pair: pair,
       prec: "P0",
       len: 25,
       freq: "F0",

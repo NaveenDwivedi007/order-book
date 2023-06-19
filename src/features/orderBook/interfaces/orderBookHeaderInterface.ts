@@ -1,4 +1,7 @@
+import { Pair } from "./orderBookInterface";
+
 export interface OrderBookHeaderInterface{
   toggleFn:Function,
-  isCollapsed:boolean
+  isCollapsed:boolean,
+  pairText?:Pair
 }
