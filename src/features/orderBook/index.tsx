@@ -4,7 +4,7 @@ import OrderTableRow from "./components/OrderTableRow";
 import useWebSocket from 'react-use-websocket';
 import OrderHeader from "./components/OrderHeader";
 import OrderFooter from "./components/OrderFooter";
-import { SocketResponse } from "./interfaces/clientResponseInterface";
+import { ResponseTransformObject, SocketResponse } from "./interfaces/clientResponseInterface";
 import { OrderTableRowInterface } from "./interfaces/orderTableRowInterfaces";
 import Loader from "../../components/Loader";
 let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
@@ -12,8 +12,8 @@ let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 
 
 function OrderBook() {
-  const [buyObj, setBuyObj] = useState<{ [key: string | number]: OrderTableRowInterface }>({})
-  const [sellObj, setSellObj] = useState<{ [key: string | number]: OrderTableRowInterface }>({})
+  const [buyObj, setBuyObj] = useState<ResponseTransformObject>({})
+  const [sellObj, setSellObj] = useState<ResponseTransformObject>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -160,7 +160,7 @@ function OrderBook() {
     setIsCollapsed(val => !val)
   }
 
-  function objectToArrHelper(obj: { [key: string | number]: OrderTableRowInterface }, sortType: 'asc' | 'dec' = 'asc'): OrderTableRowInterface[] {
+  function objectToArrHelper(obj: ResponseTransformObject, sortType: 'asc' | 'dec' = 'asc'): OrderTableRowInterface[] {
     if (!obj) return []
     let total = 0
     let totals = 0
@@ -174,7 +174,7 @@ function OrderBook() {
       const currObj = {...obj[x]}
       if (sortType=== 'dec') {
         currObj.total = parseFloat(total.toFixed(2))
-        currObj.progressBarWidth = volumeCalculator(currObj.total,totals)
+        currObj.progressBarWidth = 100-volumeCalculator(currObj.total,totals)
         total = (total - currObj?.amount)
       }else{
         total += currObj.amount
@@ -193,7 +193,7 @@ function OrderBook() {
         <div className="order-book-container">
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-            {!isLoading && objectToArrHelper(buyObj, 'dec').map((x, i) =>
+            {!isLoading && objectToArrHelper(buyObj).map((x, i) =>
             (
               <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
             )}
@@ -201,7 +201,7 @@ function OrderBook() {
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
 
-            {!isLoading && objectToArrHelper(sellObj).map((x, i) =>
+            {!isLoading && objectToArrHelper(sellObj, 'dec').map((x, i) =>
             (
               <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
             )}

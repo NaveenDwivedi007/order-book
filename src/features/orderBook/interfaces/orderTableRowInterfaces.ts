@@ -1,9 +1,9 @@
 export interface OrderTableRowInterface{
   count:number,
   amount:number,
-  total:number,
   price:number|string,
-  isReversible:boolean,
+  total?:number,
+  isReversible?:boolean,
   progressBarWidth?:number,
 }
 

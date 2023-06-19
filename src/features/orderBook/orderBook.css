@@ -91,6 +91,7 @@
 .table-row .table-cell{
   text-align: end;
   font-size: .8em;
+  cursor: pointer;
 }
 .table-row .table-cell .action-btn{
   border: none;
