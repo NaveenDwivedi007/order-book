@@ -151,7 +151,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
     })
   }
   function volumeCalculator(total: number, totals: number): number {
-    return Math.min(Math.ceil(total / (totals) * 100), 90)
+    return Math.min(Math.ceil(total / (totals) * 100), 99)
   }
 
   function toggleCollasHandler() {
