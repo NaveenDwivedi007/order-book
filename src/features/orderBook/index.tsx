@@ -12,185 +12,178 @@ let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
 
 
 function OrderBook() {
-  const [buyObj,setBuyObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
-  const [sellObj,setSellObj]= useState<{[key:string|number]:OrderTableRowInterface}>({})
-  const [isLoading,setIsLoading] = useState(true)
-  const [isCollapsed,setIsCollapsed ] = useState(false)
+  const [buyObj, setBuyObj] = useState<{ [key: string | number]: OrderTableRowInterface }>({})
+  const [sellObj, setSellObj] = useState<{ [key: string | number]: OrderTableRowInterface }>({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
 
   const {
     sendMessage
   } = useWebSocket(socketUrl, {
     onOpen: () => console.log('connected to websocket'),
-    onClose:() => {
+    onClose: () => {
       setIsLoading(true)
       console.log('webSocket close trying to reconnect')
     },
     shouldReconnect: () => true,
-    onMessage: (event: WebSocketEventMap['message']) =>  {      
-      let temp:SocketResponse = JSON.parse(event?.data);
+    onMessage: (event: WebSocketEventMap['message']) => {
+      let temp: SocketResponse = JSON.parse(event?.data);
       orderBookArrHelper(temp[1])
     }
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
-    let msg = JSON.stringify( {
+    let msg = JSON.stringify({
       event: "subscribe",
       channel: "book",
       symbol: 'tBTCUSD',
-      pair:'BTCUSD',
+      pair: 'BTCUSD',
       prec: "P0",
       len: 25,
       freq: "F0",
-      subId: 123,
     })
     sendMessage(msg)
-  },[sendMessage])
+  }, [sendMessage])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isLoading) {
       if (Object.keys(buyObj).length && Object.keys(sellObj).length) {
         setIsLoading(false)
       }
     }
-  },[buyObj, isLoading, sellObj])
+  }, [buyObj, isLoading, sellObj])
 
-  function orderBookArrHelper(orderDetails:[number,number,number]|string) {
-    if(!orderDetails || typeof(orderDetails) === 'string') return    
-    let [price,count,amount] = orderDetails
+  function orderBookArrHelper(orderDetails: [number, number, number] | string) {
+    if (!orderDetails || typeof (orderDetails) === 'string') return
+    let [price, count, amount] = orderDetails
     orderDetails[0] = Math.floor(price)
     if (!price) return
-    if (count){
-      if (amount<0) {
+    if (count) {
+      if (amount < 0) {
         setSellObjHandler(orderDetails)
-      }else{
+      } else {
         setBuyObjHandler(orderDetails)
       }
     }
   }
 
-  function setSellObjHandler(orderDetails:[number,number,number]) {
-    let [price,count,amount] = orderDetails
+  function setSellObjHandler(orderDetails: [number, number, number]) {
+    let [price, count, amount] = orderDetails
     if (!price) return
-    const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
-    amount = Math.round(-1*amount*100)/100
-    if (amount === 0 || amount === -0) {            
-      if(sellObj[price]){
-        let tempObj = {...sellObj} 
-        delete tempObj[price]      
-        setSellObj(()=>{
-          return {...tempObj}
+    amount = Math.round(-1 * amount * 100) / 100
+    if (amount === 0 || amount === -0) {
+      if (sellObj[price]) {
+        let tempObj = { ...sellObj }
+        delete tempObj[price]
+        setSellObj(() => {
+          return { ...tempObj }
         })
       }
       return
     }
-    let total = Math.floor((count*amount)*100)/100
+    let total = Math.floor((count * amount) * 100) / 100
     let tempObj = sellObj[price]
-    if (tempObj ) {
+    if (tempObj) {
       if (tempObj.count !== count || tempObj.amount !== amount) {
         tempObj = {
           ...tempObj,
           count,
           amount,
-          total:total,
-          isReversible:true,
+          total: total,
+          isReversible: true,
           price,
-          progressBarWidth:volumeCalculator(total,totals),
 
         }
-      }else{
+      } else {
         return
       }
-    }else{
+    } else {
       tempObj = {
         count,
         amount,
-        total:total,
-        isReversible:true,
+        total: total,
+        isReversible: true,
         price,
-        progressBarWidth:volumeCalculator(total,totals),
 
       }
     }
-    setSellObj((val)=>{
+    setSellObj((val) => {
       val[price] = tempObj
-      return {...val}
+      return { ...val }
     })
   }
-  function setBuyObjHandler(orderDetails:[number,number,number]) {
-    let [price,count,amount] = orderDetails
+  function setBuyObjHandler(orderDetails: [number, number, number]) {
+    let [price, count, amount] = orderDetails
     if (!price) return
-    const totals = Object.values(sellObj).map(x=>x.total).filter(Boolean)
-    if (buyObj[price] && amount === 0 ) {
-      let tempObj = {...buyObj} 
+    if (buyObj[price] && amount === 0) {
+      let tempObj = { ...buyObj }
       delete tempObj[price]
       setBuyObj(tempObj)
     }
-    amount = Math.round(amount*100)/100
-    let total = Math.floor((count*amount)*100)/100
+    amount = Math.round(amount * 100) / 100
+    let total = Math.floor((count * amount) * 100) / 100
     let tempObj = buyObj[price]
-    if (tempObj ) {
+    if (tempObj) {
       if (tempObj.count !== count || tempObj.amount !== amount) {
         tempObj = {
           ...tempObj,
           count,
           amount,
-          total:total,
-          isReversible:false,
+          total: total,
+          isReversible: false,
           price,
-
-          progressBarWidth:100-volumeCalculator(total,totals)
         }
-      }else{
+      } else {
         return
       }
-    }else{
+    } else {
       tempObj = {
         count,
         amount,
-        total:total,
-        isReversible:false,
+        total: total,
+        isReversible: false,
         price,
-        progressBarWidth:100-volumeCalculator(total,totals),
       }
     }
-    setBuyObj((val)=>{
+    setBuyObj((val) => {
       val[price] = tempObj
-      return {...val}
+      return { ...val }
     })
   }
-  function volumeCalculator(total:number,totals:number[]):number {
-    let set:any = new Set(totals)
-    return Math.min(Math.ceil(total/([...set].reduce((prev,curr)=>prev+curr,0))*100),90)
+  function volumeCalculator(total: number, totals: number): number {
+    return Math.min(Math.ceil(total / (totals) * 100), 90)
   }
 
   function toggleCollasHandler() {
-    setIsCollapsed(val=>!val)
+    setIsCollapsed(val => !val)
   }
 
-  function objectToArrHelper(obj:{[key:string|number]:OrderTableRowInterface},sortType:'asc'|'dec'='asc'):OrderTableRowInterface[] {
+  function objectToArrHelper(obj: { [key: string | number]: OrderTableRowInterface }, sortType: 'asc' | 'dec' = 'asc'): OrderTableRowInterface[] {
     if (!obj) return []
-    const totals:number[]=[]
-    let totalnumber = 0
-    return Object.keys(obj).sort((a,b)=>{
-      totals.push(obj[a].total)
-        return obj[a].total - obj[b].total
-    }).map((x,i,arr)=>{
+    let total = 0
+    let totals = 0
+    return Object.keys(obj).filter(x => {
+      if (obj[x].amount && sortType === 'dec') {
+        total += obj[x].amount
+      }
+      totals += obj[x].amount
+      return obj[x].amount
+    }).map(x => {
       const currObj = {...obj[x]}
-      if (sortType === 'dec') {
-        const idx = i+1;
-        totalnumber = totalnumber+obj[arr[arr.length-idx]].amount;
-        currObj.total = Number(totalnumber.toFixed(2));
-        currObj.progressBarWidth = 100-volumeCalculator(totalnumber,totals);
+      if (sortType=== 'dec') {
+        currObj.total = parseFloat(total.toFixed(2))
+        currObj.progressBarWidth = volumeCalculator(currObj.total,totals)
+        total = (total - currObj?.amount)
       }else{
-        totalnumber = totalnumber+currObj.amount;
-        currObj.total = Number(totalnumber.toFixed(2));
-        currObj.progressBarWidth = volumeCalculator(totalnumber,totals);
+        total += currObj.amount
+        currObj.total = parseFloat(total.toFixed(2))
+        currObj.progressBarWidth = volumeCalculator(currObj.total,totals)
       }
       return currObj
-    }).filter(x=>x.amount)
-    
+    })
+
   }
 
   return (
@@ -200,23 +193,23 @@ function OrderBook() {
         <div className="order-book-container">
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"forward"} ></OrderTableHeader>
-            {!isLoading && objectToArrHelper(buyObj,'dec').map((x,i)=>
-              (
-                <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
-              )}
+            {!isLoading && objectToArrHelper(buyObj, 'dec').map((x, i) =>
+            (
+              <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
+            )}
           </div>
           <div className="order-book-buy-sell-section">
             <OrderTableHeader layout={"reverse"} ></OrderTableHeader>
-            
-            {!isLoading && objectToArrHelper(sellObj).map((x,i)=>
-              (
-                <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
-              )}
+
+            {!isLoading && objectToArrHelper(sellObj).map((x, i) =>
+            (
+              <OrderTableRow key={x.price} {...x} price={x.price} ></OrderTableRow>)
+            )}
           </div>
         </div>
-          {isLoading && <div className="loader">
-            <Loader isImageVisible={false}/>
-          </div> }
+        {isLoading && <div className="loader">
+          <Loader isImageVisible={false} />
+        </div>}
         <OrderFooter></OrderFooter>
       </div>}
     </div>

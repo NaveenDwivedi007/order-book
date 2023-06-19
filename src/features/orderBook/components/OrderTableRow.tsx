@@ -5,10 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faBell } from '@fortawesome/free-solid-svg-icons'
 import React from "react";
 
-
-
-// rgba(1, 167, 129, 0.25)
-
 function OrderTableRow({
   count=0,
   amount=0,
@@ -88,6 +84,4 @@ function OrderTableRow({
     </div>
   )
 }
-
-
 export default React.memo(OrderTableRow)

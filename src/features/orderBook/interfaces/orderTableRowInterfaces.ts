@@ -4,7 +4,7 @@ export interface OrderTableRowInterface{
   total:number,
   price:number|string,
   isReversible:boolean,
-  progressBarWidth:number,
+  progressBarWidth?:number,
 }
 
 export interface StyleObj{

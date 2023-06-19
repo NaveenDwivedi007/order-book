@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWindowRestore,faCircle } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
+
 function OrderFooter() {
   return (
     <div className="order-footer">
