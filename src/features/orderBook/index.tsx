@@ -8,7 +8,7 @@ import { ResponseTransformObject, SocketResponse } from "./interfaces/clientResp
 import { OrderTableRowInterface } from "./interfaces/orderTableRowInterfaces";
 import Loader from "../../components/Loader";
 import { OrderBookInterface } from "./interfaces/orderBookInterface";
-let socketUrl = 'wss://api-pub.bitfinex.com/ws/2'
+import { SOCKET_URL } from "./constant/urls";
 
 
 
@@ -23,7 +23,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
 
   const {
     sendMessage
-  } = useWebSocket(socketUrl, {
+  } = useWebSocket(SOCKET_URL, {
     onOpen: () => console.log('connected to websocket'),
     onClose: () => {
       setIsLoading(true)
@@ -31,17 +31,17 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
     },
     shouldReconnect: () => true,
     onMessage: (event: WebSocketEventMap['message']) => {
-      let temp: SocketResponse = JSON.parse(event?.data);
-      orderBookArrHelper(temp[1])
+      const socketData: SocketResponse = JSON.parse(event?.data);
+      // TODO: error handling pending
+      orderBookArrHelper(socketData[1])
     }
   });
 
   useEffect(() => {
     sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
-    let msg = JSON.stringify({
+    const msg = JSON.stringify({
       event: "subscribe",
       channel: "book",
-      // symbol: 'tBTCUSD',
       pair: pair,
       prec: "P0",
       len: 25,
@@ -58,7 +58,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
     }
   }, [buyObj, isLoading, sellObj])
 
-  function orderBookArrHelper(orderDetails: [number, number, number] | string) {
+  function orderBookArrHelper(orderDetails: number[] | string) {
     if (!orderDetails || typeof (orderDetails) === 'string') return
     let [price, count, amount] = orderDetails
     orderDetails[0] = Math.floor(price)
@@ -72,7 +72,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
     }
   }
 
-  function setSellObjHandler(orderDetails: [number, number, number]) {
+  function setSellObjHandler(orderDetails: number[]) {
     let [price, count, amount] = orderDetails
     if (!price) return
     amount = Math.round(-1 * amount * 100) / 100
@@ -86,7 +86,6 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       }
       return
     }
-    let total = Math.floor((count * amount) * 100) / 100
     let tempObj = sellObj[price]
     if (tempObj) {
       if (tempObj.count !== count || tempObj.amount !== amount) {
@@ -94,7 +93,6 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
           ...tempObj,
           count,
           amount,
-          total: total,
           isReversible: true,
           price,
 
@@ -106,7 +104,6 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       tempObj = {
         count,
         amount,
-        total: total,
         isReversible: true,
         price,
 
@@ -117,7 +114,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       return { ...val }
     })
   }
-  function setBuyObjHandler(orderDetails: [number, number, number]) {
+  function setBuyObjHandler(orderDetails: number[]) {
     let [price, count, amount] = orderDetails
     if (!price) return
     if (buyObj[price] && amount === 0) {
@@ -126,7 +123,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       setBuyObj(tempObj)
     }
     amount = Math.round(amount * 100) / 100
-    let total = Math.floor((count * amount) * 100) / 100
+    
     let tempObj = buyObj[price]
     if (tempObj) {
       if (tempObj.count !== count || tempObj.amount !== amount) {
@@ -134,7 +131,6 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
           ...tempObj,
           count,
           amount,
-          total: total,
           isReversible: false,
           price,
         }
@@ -145,7 +141,6 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       tempObj = {
         count,
         amount,
-        total: total,
         isReversible: false,
         price,
       }
@@ -191,7 +186,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
 
   return (
     <div className="order-book">
-      <OrderHeader isCollapsed={isCollapsed} toggleFn={toggleCollasHandler} ></OrderHeader>
+      <OrderHeader isCollapsed={isCollapsed} toggleFn={toggleCollasHandler} pairText={pair} ></OrderHeader>
       {!isCollapsed && <div className="order-book-body">
         <div className="order-book-container">
           <div className="order-book-buy-sell-section">
