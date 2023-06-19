@@ -1,9 +1,8 @@
-import { useEffect,useState } from "react";
+import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from "react";
 import { OrderTableRowInterface, StyleObj } from "../interfaces/orderTableRowInterfaces";
-import "../orderBook.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faBell } from '@fortawesome/free-solid-svg-icons'
-import React from "react";
+import "../orderBook.css";
 
 function OrderTableRow({
   count=0,
@@ -55,6 +54,7 @@ function OrderTableRow({
   useEffect(()=>{
     setIsNewEntry(false)
   },[amount,total])
+  
   useEffect(()=>{
     setIsNewEntry(true)
   },[price])

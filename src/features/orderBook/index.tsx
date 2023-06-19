@@ -12,9 +12,21 @@ import { SOCKET_URL } from "./constant/urls";
 
 
 
-function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
-  pair:'BTCUSD'
-}) {
+function OrderBook({
+  pair = 'BTCUSD',
+  event = "subscribe",
+  channel = "book",
+  prec = "P0",
+  len = 25,
+  freq = "F0"
+}: Partial<OrderBookInterface> = {
+    pair: 'BTCUSD',
+    event: "subscribe",
+    channel: "book",
+    prec: "P0",
+    len: 25,
+    freq: "F0",
+  }) {
   const [buyObj, setBuyObj] = useState<ResponseTransformObject>({})
   const [sellObj, setSellObj] = useState<ResponseTransformObject>({})
   const [isLoading, setIsLoading] = useState(true)
@@ -40,12 +52,12 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
   useEffect(() => {
     sendMessage(JSON.stringify({ event: "conf", flags: 65536 + 131072 }))
     const msg = JSON.stringify({
-      event: "subscribe",
-      channel: "book",
-      pair: pair,
-      prec: "P0",
-      len: 25,
-      freq: "F0",
+      event,
+      channel,
+      pair,
+      prec,
+      len,
+      freq,
     })
     sendMessage(msg)
   }, [sendMessage])
@@ -72,6 +84,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
     }
   }
 
+  // TODO: make it a custom hook
   function setSellObjHandler(orderDetails: number[]) {
     let [price, count, amount] = orderDetails
     if (!price) return
@@ -123,7 +136,7 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
       setBuyObj(tempObj)
     }
     amount = Math.round(amount * 100) / 100
-    
+
     let tempObj = buyObj[price]
     if (tempObj) {
       if (tempObj.count !== count || tempObj.amount !== amount) {
@@ -153,33 +166,35 @@ function OrderBook({pair='BTCUSD'}:Partial<OrderBookInterface>={
   function volumeCalculator(total: number, totals: number): number {
     return Math.min(Math.ceil(total / (totals) * 100), 99)
   }
+  // ================
 
   function toggleCollasHandler() {
     setIsCollapsed(val => !val)
   }
 
+  // TODO: move to utils
   function objectToArrHelper(obj: ResponseTransformObject, sortType: 'asc' | 'dec' = 'asc'): OrderTableRowInterface[] {
     if (!obj) return []
     let total = 0
     let totals = 0
-    return Object.keys(obj).filter((x,i) => {
-      if (i<25) {
+    return Object.keys(obj).filter((x, i) => {
+      if (i < 25) {
         if (obj[x].amount && sortType === 'dec') {
           total += obj[x].amount
         }
         totals += obj[x].amount
       }
-      return obj[x].amount && i<25
+      return obj[x].amount && i < 25
     }).map(x => {
-      const currObj = {...obj[x]}
-      if (sortType=== 'dec') {
+      const currObj = { ...obj[x] }
+      if (sortType === 'dec') {
         currObj.total = parseFloat(total.toFixed(2))
-        currObj.progressBarWidth = 100-volumeCalculator(currObj.total,totals)
+        currObj.progressBarWidth = 100 - volumeCalculator(currObj.total, totals)
         total = (total - currObj?.amount)
-      }else{
+      } else {
         total += currObj.amount
         currObj.total = parseFloat(total.toFixed(2))
-        currObj.progressBarWidth = volumeCalculator(currObj.total,totals)
+        currObj.progressBarWidth = volumeCalculator(currObj.total, totals)
       }
       return currObj
     })

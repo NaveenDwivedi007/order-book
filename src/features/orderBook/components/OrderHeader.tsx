@@ -13,6 +13,7 @@ function OrderHeader({
     pairText: 'BTCUSD'
   }) {
   const [pair, setPair] = useState('')
+  // TODO: move to utils
   useEffect(() => {
     if (!pair) {
       let str = ''
@@ -50,7 +51,10 @@ function OrderHeader({
       </div>
       {!isCollapsed && <div className="section action">
         <button className='action-btn' onClick={(event)=>{
-          actionControlHandler(event)
+          actionControlHandler(event,()=>{
+            console.log('Bell icon clicked');
+            
+          })
         }}>
           <FontAwesomeIcon icon={faBell} style={{ color: "#f2f2f2", }} />
         </button>
