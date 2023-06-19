@@ -171,35 +171,25 @@ function OrderBook() {
 
   function objectToArrHelper(obj:{[key:string|number]:OrderTableRowInterface},sortType:'asc'|'dec'='asc'):OrderTableRowInterface[] {
     if (!obj) return []
-    // TODO: make a length of roe same and fix in count.
-    // if (Object.keys(obj).length>15) {
-    //   let removeLength = Object.keys(buyObj).length-15
-    //   let totals:number[] = []
-    //   return Object.keys(obj).sort((a,b)=>{
-    //     if (sortType === 'dec') return obj[b].total - obj[a].total
-    //     return obj[a].total - obj[b].total
-    //   }).filter((x,i)=>{
-    //     if (sortType === 'dec') {
-    //       if (i<removeLength) {
-    //         totals.push(obj[x].total)
-    //       }
-    //       return  i<removeLength
-    //     }
-    //     totals.push(obj[x].total)
-    //     return i>removeLength
-    //   }).map(x=>obj[x]).map(x=>{
-    //     if (sortType === 'dec') {
-    //       x.progressBarWidth = 100 - volumeCalculator(x.total,totals)
-    //     }else{
-    //       x.progressBarWidth = volumeCalculator(x.total,totals)
-    //     }
-    //     return {...x}
-    //   })
-    // }
+    const totals:number[]=[]
+    let totalnumber = 0
     return Object.keys(obj).sort((a,b)=>{
-      if (sortType === 'dec') return obj[b].total - obj[a].total
+      totals.push(obj[a].total)
         return obj[a].total - obj[b].total
-    }).map(x=>obj[x]).filter(x=>x.amount)
+    }).map((x,i,arr)=>{
+      const currObj = {...obj[x]}
+      if (sortType === 'dec') {
+        const idx = i+1;
+        totalnumber = totalnumber+obj[arr[arr.length-idx]].amount;
+        currObj.total = Number(totalnumber.toFixed(2));
+        currObj.progressBarWidth = 100-volumeCalculator(totalnumber,totals);
+      }else{
+        totalnumber = totalnumber+currObj.amount;
+        currObj.total = Number(totalnumber.toFixed(2));
+        currObj.progressBarWidth = volumeCalculator(totalnumber,totals);
+      }
+      return currObj
+    }).filter(x=>x.amount)
     
   }
 
